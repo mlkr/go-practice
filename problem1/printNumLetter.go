@@ -1,11 +1,12 @@
 package problem1
 
 import (
-	"fmt"
+	"strconv"
 	"sync"
 )
 
-func main() {
+func printNumLetter() string {
+	res := []byte{}
 	var wg sync.WaitGroup
 	wg.Add(28)
 
@@ -14,12 +15,12 @@ func main() {
 	go func() {
 		for i := 1; i <= 28; i++ {
 			<-printNum
-			fmt.Print(i)
+			res = append(res, []byte(strconv.Itoa(i))...)
 			wg.Done()
 
 			i++
 
-			fmt.Print(i)
+			res = append(res, []byte(strconv.Itoa(i))...)
 			wg.Done()
 
 			if i%2 == 0 {
@@ -31,11 +32,11 @@ func main() {
 	go func() {
 		for j := 65; j <= 90; j++ {
 			<-printLetter
-			fmt.Print(string(byte(j)))
+			res = append(res, byte(j))
 
 			j++
 
-			fmt.Print(string(byte(j)))
+			res = append(res, byte(j))
 
 			if j%2 == 0 {
 				printNum <- true
@@ -46,4 +47,6 @@ func main() {
 	printNum <- true
 
 	wg.Wait()
+
+	return string(res)
 }
